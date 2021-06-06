@@ -1,0 +1,24 @@
+# see also: http://docs.opentripplanner.org/en/latest/Basic-Tutorial/#saving-a-graph
+FROM openjdk:11-jre
+
+RUN apt update
+RUN apt install time
+
+RUN mkdir -p /otp-build
+WORKDIR /otp-build
+
+RUN mkdir data
+
+ADD https://download.geofabrik.de/europe/germany-latest.osm.pbf data/germany-latest.osm.pbf
+# ADD https://download.geofabrik.de/europe/germany/brandenburg-latest.osm.pbf data/germany-latest.osm.pbf
+ADD https://repo1.maven.org/maven2/org/opentripplanner/otp/2.0.0/otp-2.0.0-shaded.jar ./otp-shaded.jar
+
+# todo: elevation data
+COPY ./build-config.json data/
+
+# print version
+RUN java -jar otp-shaded.jar --version
+
+# build
+RUN /usr/bin/time -v java -Xmx120G -jar otp-shaded.jar --buildStreet data
+# RUN /usr/bin/time -v java -Xmx30G -jar otp-shaded.jar --buildStreet data

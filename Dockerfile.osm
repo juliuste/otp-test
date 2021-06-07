@@ -11,6 +11,8 @@ RUN mkdir data
 
 ADD https://download.geofabrik.de/europe/germany-latest.osm.pbf data/germany-latest.osm.pbf
 # ADD https://download.geofabrik.de/europe/germany/brandenburg-latest.osm.pbf data/germany-latest.osm.pbf
+ADD https://opendata-oepnv.fra1.digitaloceanspaces.com/gtfs-germany.zip data/gtfs-germany.zip
+
 ADD https://repo1.maven.org/maven2/org/opentripplanner/otp/2.0.0/otp-2.0.0-shaded.jar ./otp-shaded.jar
 
 # todo: elevation data
@@ -20,5 +22,6 @@ COPY ./build-config.json data/
 RUN java -jar otp-shaded.jar --version
 
 # build
-RUN /usr/bin/time -v java -Xmx120G -jar otp-shaded.jar --buildStreet data
+RUN /usr/bin/time -v java -Xmx120G -jar otp-shaded.jar --build --save data
+# RUN /usr/bin/time -v java -Xmx120G -jar otp-shaded.jar --buildStreet data
 # RUN /usr/bin/time -v java -Xmx30G -jar otp-shaded.jar --buildStreet data
